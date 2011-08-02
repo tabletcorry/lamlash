@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Code below is borrowed from https://github.com/jayferd/balls
+
+which greadlink >/dev/null && readlink() {
+  greadlink $@
+}
+
+LAMLASH_LIB=$(dirname $0)/../lib
+LAMLASH_LIB=$(readlink -f "$LAMLASH_LIB") # expand the ../
+
+mode=$1; shift
+
+while getopts 'C:' opt; do
+  case $opt in
+    C)
+      LAMLASH_CONF=$OPTARG
+    ;;
+    \?)
+      echo "Usage: $0 <mode> [options]"
+      echo
+      echo 'Options:'
+      echo '  -C <path>  path to the lamlash conf file, LAMLASH_CONF'
+      echo '             default: ./config/$LAMLASH_ENV.sh'
+    ;;
+  esac
+done
+
+if [ -n "$LAMLASH_CONF" ]; then
+  . "$LAMLASH_CONF"
+fi
+. $LAMLASH_LIB/lamlash.sh
+
+
+case $mode in
+  *)
+    echo "unknown mode"
+  ;;
+esac
